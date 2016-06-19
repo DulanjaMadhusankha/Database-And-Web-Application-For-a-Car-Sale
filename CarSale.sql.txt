@@ -1,0 +1,109 @@
+	DROP DATABASE ProjectDatabase;
+
+
+	CREATE DATABASE ProjectDatabase;
+
+
+	USE ProjectDatabase;
+
+
+	CREATE TABLE Vehicle(
+	CarID INT(8) UNIQUE AUTO_INCREMENT  NOT NULL,
+	EngineNo VARCHAR(17) UNIQUE NOT NULL,
+	ChassiNo VARCHAR(17) UNIQUE NOT NULL,
+	Make VARCHAR(20),
+	Price INT(10),
+	Colour VARCHAR(15),
+	NoOfDoors INT(1),
+	Year INT(4),
+	Model VARCHAR(20),
+	Fuel VARCHAR(20),
+	Sold VARCHAR(10) DEFAULT 'UNSOLD' NOT NULL,
+	PRIMARY KEY (CarID,EngineNO,ChassiNO)
+	);
+
+
+	LOAD DATA 
+	LOCAL INFILE 'F:\\AAcedemic\\CO 226\\Project\\Cars.txt'
+	INTO TABLE Vehicle 
+	LINES TERMINATED BY '\r\n'
+	;
+
+
+	CREATE TABLE Owner(
+	CarID INT(8) AUTO_INCREMENT UNIQUE NOT NULL,
+	FirstName VARCHAR(30),
+	LastName VARCHAR(30) NOT NULL,
+	Address VARCHAR(100)NOT NULL,
+	MobileNo INT(16) NOT NULL,
+	EmailAdderss VARCHAR(60) NOT NULL,
+	PRIMARY KEY (CarID),
+	FOREIGN KEY (CarID) REFERENCES Vehicle (CarID) ON UPDATE CASCADE ON DELETE CASCADE
+	);
+
+
+	LOAD DATA 
+	LOCAL INFILE 'F:\\AAcedemic\\CO 226\\Project\\Owners.txt'
+	INTO TABLE Owner 
+	LINES TERMINATED BY '\r\n'
+	;
+
+
+	CREATE TABLE Customer(
+	CustomerID INT(8) AUTO_INCREMENT UNIQUE  NOT NULL,
+	FirstName VARCHAR(30),
+	LastName VARCHAR(30) NOT NULL,
+	Address VARCHAR(100) NOT NULL,
+	MobileNo INT(16) NOT NULL,
+	EmailAdderss VARCHAR(60) NOT NULL,
+	PRIMARY KEY (CustomerID)
+	);
+
+
+	LOAD DATA 
+	LOCAL INFILE 'F:\\AAcedemic\\CO 226\\Project\\Customer.txt'
+	INTO TABLE Customer 
+	LINES TERMINATED BY '\r\n'
+	;
+
+
+	CREATE TABLE Salesman(
+	SalesmanID INT(8) UNIQUE AUTO_INCREMENT  NOT NULL,
+	FirstName VARCHAR(30),
+	LastName VARCHAR(30) NOT NULL,
+	Address VARCHAR(100) NOT NULL,
+	MobileNo INT(16) NOT NULL,
+	EmailAdderss VARCHAR(60) NOT NULL,
+	PRIMARY KEY (SalesmanID)
+	);
+
+
+	LOAD DATA 
+	LOCAL INFILE 'F:\\AAcedemic\\CO 226\\Project\\Salesmans.txt'
+	INTO TABLE Salesman 
+	LINES TERMINATED BY '\r\n'
+	;
+
+
+	CREATE TABLE Orders(
+	OrderID INT(8) UNIQUE AUTO_INCREMENT NOT NULL,
+	SalesmanID INT(8),
+	CarID INT(8) NOT NULL,
+	CustomerID INT(8),
+	PRIMARY KEY (OrderID),
+	FOREIGN KEY (CarID) REFERENCES Vehicle (CarID),
+	FOREIGN KEY (CustomerID) REFERENCES Customer (CustomerID),
+	FOREIGN KEY (SalesmanID) REFERENCES Salesman (SalesmanID)
+	);
+
+
+	CREATE TABLE Payment(
+	PaymentNo INT(8) UNIQUE NOT NULL  ,
+	PaymentMethod VARCHAR(20) NOT NULL,
+	MethodNo INT(20) NOT NULL,
+	OrderID INT(8) UNIQUE NOT NULL,
+	InOrOut VARCHAR(5) NOT NULL,
+	PRIMARY KEY (PaymentNo),
+	FOREIGN KEY (OrderID) REFERENCES Orders (OrderID) ON UPDATE CASCADE ON DELETE CASCADE
+	);
+	
